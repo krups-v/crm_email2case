@@ -1,0 +1,24 @@
+function inboxCheck() {
+  const threads = GmailApp.search('subject:("create issue") -label:processed')
+  threads.forEach(thread => {
+    const messages = thread.getMessages()
+    messages.forEach(message => {
+      Logger.log(`Found message ${message.getSubject()}`)
+      const data = {
+        'sender': message.getFrom(),
+        'subject': message.getSubject(),
+        'body': message.getPlainBody()
+      }
+      const options = {
+        'method': 'post',
+        'contentType': 'application/json',
+        'payload' : JSON.stringify(data)
+      }
+      const response = UrlFetchApp.fetch('', options).getContentText()
+      Logger.log(response)
+      GmailApp.sendEmail('', 'Your request was processed', response)
+    })
+    thread.addLabel(GmailApp.getUserLabelByName('processed'))
+  })
+
+}
