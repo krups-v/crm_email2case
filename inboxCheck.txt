@@ -1,3 +1,4 @@
+##It is code for Google AppScript for checking email
 function inboxCheck() {
   const threads = GmailApp.search('subject:("create issue") -label:processed')
   threads.forEach(thread => {
